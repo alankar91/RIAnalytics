@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_61760bea8f784c21b9f6fa318793b8fd }}/alankar91/rianalytics:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_61760bea8f784c21b9f6fa318793b8fd }}/rianalytics:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:

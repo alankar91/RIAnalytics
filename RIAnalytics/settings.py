@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ["https://rianalytics.wonderfulsea-39291c4b.eastasia.azurecontainerapps.io", "https://riwebapp.azurewebsites.net"]
+CSRF_TRUSTED_ORIGINS = ["https://ritextanalytics.azurewebsites.net"]
 
 # Application definition
 
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'social_analytics.apps.SocialAnalyticsConfig',
     'insight_tools.apps.InsightToolsConfig',
     'RIcore.apps.RicoreConfig',
- 
+
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,51 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2 # Working cicd
+    - 
+      name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}  
+    - name: Get current commit id # get the date of the build
+      id: date
+      run: echo "::set-output name=dockertag::$(git log -1 --pretty=%h)"  # Use this tag if you want -> dev${{ steps.date.outputs.dockertag }}
+    - name: Build the Docker image
+      run: docker build . --tag dhairya137/rianalytics:latest
+      
+    - name: Docker Push
+      run: docker push dhairya137/rianalytics:latest
+      
+      
+  push:
+    needs: build
+  
+    runs-on: ubuntu-latest
+  
+    steps:
+    - name: Remote ssh into VM
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          docker rm -f rianalytics
+          docker image rm dhairya137/rianalytics
+          docker run -d --name=rianalytics -p 80:8000 dhairya137/rianalytics:latest
+          docker images --digests
+          echo "App is runnning fine..."

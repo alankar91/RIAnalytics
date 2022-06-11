@@ -1,0 +1,45 @@
+name: Build and deploy to acr
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest #
+
+    steps:
+      - name: "Get the branch name"
+        id: branch-name
+        uses: tj-actions/branch-names@v5
+
+      - name: "Set RAW_BRANCH variable"
+        run: echo "RAW_BRANCH=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_ENV
+
+      - name: "Checkout repo"
+        uses: actions/checkout@v2
+
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: "Login to Container Registry"
+        uses: azure/docker-login@v1
+        with:
+          login-server: rianalytics.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: "build "
+        run: |
+          docker build . -t rianalytics.azurecr.io/app:${{ github.sha }}
+
+      - name: "push "
+        run: |
+          docker push rianalytics.azurecr.io/app:${{ github.sha }}
+
+      # - name: Build the Docker image
+      #   run: docker build -t engageus/flaskappp:${{ github.sha }} . -f services/backend/Dockerfile.prod
+
+      # - name: Docker Push
+      #   run: docker push engageus/flaskappp:${{ github.sha }}

@@ -1,0 +1,90 @@
+{% extends 'raw_base.html' %}
+
+{% block content %}
+  <div class="page-heading">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="header-text">
+            <h2>Text <span style="color: #ff511a;">Insights</span></h2>
+            <div class="div-dec"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="about-us" id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+          <div class="section-heading">
+            <h6>NLP-enriched Reports Intelligence Platform</h6>
+            <h4>Extracts Insights from Company Reports</h4>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="naccs">
+            <div class="tabs">
+              <div class="row">
+                <div class="col-lg-12">
+                  <ul class="nacc">
+                    <li class="active">
+                      <div>
+                          <form action="{% url 'text_form' %}" method="post" enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            {% if textform.errors%}
+                            <p>{{textform.errors}}</p>
+                            {% endif %}
+                              <div class="main-list">
+                                <h4 class="title">Text Insights</h4>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="company_report">Upload Company Report</label> <br>
+                                <input type="file" id="report_files" name="report_files" required class="form-control"  multiple/>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="search_keywords">Upload Search Keywords</label> <br>
+                                <input type="file" id="keyword_file" name="keyword_file" reqiured class="form-control"/>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="search_keywords_text">Or enter keywords manually</label> <br>
+                                <textarea name="keywords" id="keyword" cols="5" rows="5" class="form-control"></textarea>
+                                <p class="text-muted">* Keep space between comma(,) and next keyword. Example: keyword1, keyword2, keyword3</p>
+                              </div>
+                              <div class="list-item" style="font-weight: 500;">
+                                <div class="green-button">
+                                    <button class="btn-success p-3 rounded text-white" style="font-weight: 500;" type='submit' >Generate</a>
+                                </div>
+                              </div>
+                          </form>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="right-content">
+            <br><br>
+            <h4>How does it work?</h4>
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum, amet officia! Consequatur reiciendis, delectus, aut voluptatem explicabo repellendus suscipit 
+              voluptatibus assumenda blanditiis impedit voluptatum porro fugit architecto est dolores. 
+              <br><br>
+              Labore, inventore. Nostrum voluptatibus et aliquam, magni similique 
+              doloribus perspiciatis labore harum, nisi accusamus iste nulla neque facere error maiores autem.
+            </p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <p class="text-white" style="font-size: 18px;"></p>
+            <p class="text-white"></p>
+
+  <!-- ***** Main Banner Area End ***** -->
+{% endblock %}

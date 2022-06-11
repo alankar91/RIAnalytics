@@ -1,0 +1,104 @@
+{% extends 'raw_base.html' %}
+
+{% block content %}
+  <div class="page-heading">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="header-text">
+            <h2>Social Media <span style="color: #ff511a;">Insights</span></h2>
+            <div class="div-dec"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="about-us" id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+          <div class="section-heading">
+            <h6>Streamline your omnichannel social analytics with one intuitive platform</h6>
+            <h4>Transform Tweets to Insights</h4>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="naccs">
+            <div class="tabs">
+              <div class="row">
+                <div class="col-lg-12">
+                  <ul class="nacc">
+                    <li class="active">
+                      <div>
+                        <form action="{% url 'social_form' %}" method="post" enctype='multipart/form-data'>
+                          {% csrf_token %}
+                              <div class="main-list">
+                                <h4 class="title">Text Insights</h4>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="handles_files">Upload Twitter Handles File</label> <br>
+                                <input type="file" name="handles_files" id="handles_files" class="form-control"/>
+                              </div>                              
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="search_keywords">Upload Search Keywords</label> <br>
+                                <input type="file" name="keyword_file" required id="search_keywords" class="form-control"/>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="search_keywords_text">Or enter keywords manually</label> <br>
+                                <textarea name="search_keywords_text" name="keywords" id="search_keywords_text" cols="5" rows="5" class="form-control"></textarea>
+                                <p class="text-muted">* Keep space between comma(,) and next keyword. Example: keyword1, keyword2, keyword3</p>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label for="tweets_n">Enter no. of tweets to download for each company</label> <br>
+                                <input type="text" id="no_of_tweets" name="no_of_tweets" required class="form-control"/>
+                              </div>
+                              <div class="list-item d-flex flex-column" style="font-weight: 500;">
+                                <label>Enter twitter authentication keys</label> <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <input type="text" id="consumer_key" name="consumer_key" required placeholder="Consumer Key" class="form-control"/>
+                                        <input type="text" id="access_token" name="access_token" required placeholder="Access Token" class="form-control"/>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" id="consumer_secret" name="consumer_secret" required placeholder="Consumer Secret" class="form-control"/>
+                                        <input type="text" id="access_token_secret" name="access_token_secret" required placeholder="Access Token Secret" class="form-control"/>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="list-item" style="font-weight: 500;">
+                                <div class="green-button">
+                                    <button class="btn-success p-3 rounded text-white" style="font-weight: 500;" type='submit' >Generate</a>
+                                </div>
+                              </div>
+                          </form>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="right-content">
+            <br><br>
+            <h4>How does it work?</h4>
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum, amet officia! Consequatur reiciendis, delectus, aut voluptatem explicabo repellendus suscipit 
+              voluptatibus assumenda blanditiis impedit voluptatum porro fugit architecto est dolores. 
+              <br><br>
+              Labore, inventore. Nostrum voluptatibus et aliquam, magni similique 
+              doloribus perspiciatis labore harum, nisi accusamus iste nulla neque facere error maiores autem.
+            </p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <p class="text-white" style="font-size: 18px;"></p>
+            <p class="text-white"></p>
+
+  <!-- ***** Main Banner Area End ***** -->
+{% endblock %}

@@ -1,0 +1,51 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - riwebapp
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to registry
+      uses: docker/login-action@v1
+      with:
+        registry: https://rianalytics.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_a99b4a4ea1f240618f5e987096ac3dbf }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_79208c0512ca4336927f91687167c119 }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: rianalytics.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_a99b4a4ea1f240618f5e987096ac3dbf }}/app:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'riwebapp'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7ff9d8c019484abd94f2c4975e30b283 }}
+        images: 'rianalytics.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_a99b4a4ea1f240618f5e987096ac3dbf }}/app:${{ github.sha }}'

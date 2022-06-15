@@ -1,5 +1,5 @@
 # ! pip install PyMuPDF==1.18.9
-# import fitz
+import fitz
 import os
 import re
 from io import BytesIO
@@ -34,8 +34,8 @@ class TextAnalyst():
                 highlight = None
         
                 for term in search_terms:
-                    highlight_area = page.searchFor(term)
-                    highlight = page.addHighlightAnnot(highlight_area)
+                    highlight_area = page.search_for(term)
+                    highlight = page.add_highlight_annot(highlight_area)
                 
                 highlight.update()
             

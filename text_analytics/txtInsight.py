@@ -261,5 +261,5 @@ class TextAnalyst():
             f.close()
             info['STATUS']= 'QUIT'
             return(html_content)
-        except Exception as Error:
+        except ValueError:
              info['STATUS']= f" Exiting with Error {str(Error)}"

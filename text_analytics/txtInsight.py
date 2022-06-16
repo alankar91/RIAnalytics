@@ -186,11 +186,14 @@ class TextAnalyst():
     def generateHTML(self, reportfile, keywordfile, keywords, report):
 
         try:
-            with open(f"{os.path.join(self.FILES_DIR, report)}.html", 'r') as f:
-                print(f">>>>{os.path.join(self.FILES_DIR, report)}.html find")
-                repstr = f.read()
-                if len(repstr) > 10:
-                    return repstr
+            try:
+                with open(f"{os.path.join(self.FILES_DIR, report)}.html", 'r') as f:
+                    print(f">>>>{os.path.join(self.FILES_DIR, report)}.html find")
+                    repstr = f.read()
+                    if len(repstr) > 10:
+                        return repstr
+            except:
+                pass
             html_content = "<div class='col-12 p-4'>"
             self.files = os.listdir(self.FILES_DIR)
             info['FILE'] = os.listdir(self.FILES_DIR)

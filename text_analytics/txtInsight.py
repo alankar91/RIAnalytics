@@ -261,4 +261,4 @@ class TextAnalyst():
             return html_content
 
         except Exception as Error:
-            info['STATUS'] = f" Exiting with Error {traceback.format_exc()}"
+            info['STATUS'] = f" Exiting with Error {Error}"

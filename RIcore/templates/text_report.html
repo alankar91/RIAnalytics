@@ -1,4 +1,4 @@
-{% extends 'raw_base.html' %}
+
 {% load static %}
 {% block content %}
   <div class="page-heading">
@@ -80,8 +80,13 @@
       let response = fetch(murl);
       try{
         response.then( response=> response.json().then(data=> {
-          if (data.value == 'QUIT'){ clearInterval(timer);}
-          else{document.getElementById('status_box').textContent = data.value;console.log(`${data.value}`)}
+          if (data.value == 'QUIT'||data.value == "end"){ 
+            clearInterval(timer);
+            analyseText();
+           }
+          else{
+               document.getElementById('status_box').textContent = data.value;
+           }
         }));
     }
     catch(error){alert(error);}
@@ -124,7 +129,6 @@
       var element = document.getElementById('report_element');
       var worker = html2pdf().from(element).save();
     }
-    analyseText();
   </script>
 
   <p class="text-white" style="font-size: 18px;"></p>

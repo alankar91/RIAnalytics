@@ -82,7 +82,6 @@
         response.then( response=> response.json().then(data=> {
           if (data.value == 'QUIT'){ clearInterval(timer);}
           else{document.getElementById('status_box').textContent = data.value;console.log(`${data.value}`)}
-          attempts ++;
         }));
     }
     catch(error){alert(error);}

@@ -1,3 +1,5 @@
+import hashlib
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -20,12 +22,10 @@ def text_page(request):
 
 def text_generate(request):
   analyst = TextAnalyst()
-  try:
-    report = analyst.generateHTML(info['reportFilename'], info['keywordFilename'],info['keywords'])
-    return JsonResponse({'status':'successful', 'report':report})
-  except Exception as E:
-    print('Error', str(E))
-    return JsonResponse({'status':'Failed', 'report':''})
+  report = analyst.generateHTML(info['reportFilename'], info['keywordFilename'],info['keywords'],report=request.GET.get("h", "report"))
+  if report:
+    return JsonResponse({'status': 'successful', 'report': report})
+  return JsonResponse({'status':'Failed', 'report':''})
 
 def handle_uploaded_file(f, filename):
     with open(os.path.join(FILES_DIR,filename), 'wb+') as destination:
@@ -38,10 +38,12 @@ def text_form_processing(request):
       text_form = textAnalyticsForm(request.POST)
       all_files = []
       my_files= request.FILES.getlist('report_files')
+      filenames = ""
       if text_form.is_valid():
         print('valid form')
         for f in my_files:
           info['reportFilename'] = f.name
+          filenames += f.name
           all_files.append(f.name)
           handle_uploaded_file(f, f.name)
         keyfile = request.FILES['keyword_file']
@@ -57,8 +59,8 @@ def text_form_processing(request):
         # domain = protocol + "://" + request.META['HTTP_HOST']
         # no need domain to make it confuse, as frontend will follow the domain of visit
         domain = ""
-
-        return render(request,'text_report.html', context={'mode':'Text','files':all_files, 'url': f'{domain}/text/generate','statusurl': f'{domain}/returnstatus'})
+        namehash = hashlib.md5(filenames.encode("utf-8")).hexdigest()
+        return render(request,'text_report.html', context={'mode':'Text', 'files':all_files, 'url': f'{domain}/text/generate?h={namehash}', 'statusurl': f'{domain}/returnstatus'})
       # if text_form.is_valid():
         
       #   '''

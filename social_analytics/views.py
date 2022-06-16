@@ -3,7 +3,8 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from .forms import *
-from RIAnalytics.settings import FILES_DIR import os
+from RIAnalytics.settings import FILES_DIR 
+import os
 from .socialAnalytics import SocialAnalyst
 info = {}
 # Create your views here.

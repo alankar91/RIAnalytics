@@ -3,8 +3,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from .forms import *
-from RIAnalytics.settings import FILES_DIR
-import os
+from RIAnalytics.settings import FILES_DIR import os
 from .socialAnalytics import SocialAnalyst
 info = {}
 # Create your views here.
@@ -49,12 +48,9 @@ def social_form_processing(request):
           f = item[1]
           handle_uploaded_file(f, f.name)
 
-        if request.is_secure():
-          protocol = 'https'
-        else:
-          protocol = 'http'
-
-        domain = protocol + "://" + request.META['HTTP_HOST']
+        # domain = protocol + "://" + request.META['HTTP_HOST']
+        # no need as browser know it better
+        domain = ""
 
         return render(request,'text_report.html', context={'mode':'Social','files':'', 'url': f'{domain}/social/generate','statusurl': f'{domain}/returnSstatus'})
           

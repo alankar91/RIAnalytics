@@ -54,7 +54,9 @@ def text_form_processing(request):
         else:
           protocol = 'http'
 
-        domain = protocol + "://" + request.META['HTTP_HOST']
+        # domain = protocol + "://" + request.META['HTTP_HOST']
+        # no need domain to make it confuse, as frontend will follow the domain of visit
+        domain = ""
 
         return render(request,'text_report.html', context={'mode':'Text','files':all_files, 'url': f'{domain}/text/generate','statusurl': f'{domain}/returnstatus'})
       # if text_form.is_valid():

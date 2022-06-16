@@ -65,7 +65,10 @@ def news_form_processing(request):
           else:
             protocol = 'http'
 
-          domain = protocol + "://" + request.META['HTTP_HOST']
+          # domain = protocol + "://" + request.META['HTTP_HOST']
+          # no need browser know it better
+          domain = ""
+
 
           return render(request,'text_report.html', context={'mode':'News','files':all_files, 'url': f'{domain}/news/generate','statusurl': f'{domain}/returnNstatus'})
       else:

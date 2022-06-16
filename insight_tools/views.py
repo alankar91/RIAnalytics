@@ -47,7 +47,9 @@ def insights_form_processing(request):
           else:
             protocol = 'http'
 
-          domain = protocol + "://" + request.META['HTTP_HOST']
+          # domain = protocol + "://" + request.META['HTTP_HOST']
+          # no need browser know it better
+          domain = ""
 
           return render(request,'text_report.html', context={'mode':'Insights','files':'', 'url': f'{domain}/insights/generate','statusurl': f'{domain}/returnIstatus'})
       else:

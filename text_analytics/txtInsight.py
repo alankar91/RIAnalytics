@@ -206,6 +206,7 @@ class TextAnalyst():
             # if keywords:
             #     search_terms = pd.concat([search_terms,pd.Series(list(keywords))],axis=0)
             result_list = []
+            file_name = "Empty"
             
             for file_name in pdf_files:
                 

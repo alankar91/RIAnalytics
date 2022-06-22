@@ -212,10 +212,11 @@ class TextAnalyst():
             #     search_terms = pd.concat([search_terms,pd.Series(list(keywords))],axis=0)
             result_list = []
             for file_name in pdf_files:
-                html_content += self.highlight_pdf(file_name, search_terms)
+                fullname = os.path.join(report, file_name)
+                html_content += self.highlight_pdf(fullname, search_terms)
                 info['STATUS'] = f'Hightlighting Successful for {file_name}'
                 info['STATUS'] = f'Extracting text for {file_name}'
-                text = self.extract_text(file_name)
+                text = self.extract_text(fullname)
                 info['STATUS'] = f'Extracted text for {file_name}'
                 sentences = tokenize.sent_tokenize(text)
                 info['STATUS'] = f'Tokenizing for {file_name}'
@@ -230,7 +231,7 @@ class TextAnalyst():
                 info['STATUS'] = f'Stage 2.1: highlighted text for {file_name}'
 
                 info['STATUS'] = f'Making table for {file_name}'
-                file_result = self.count_no_of_occurences(file_name, sentences, search_df)
+                file_result = self.count_no_of_occurences(fullname, sentences, search_df)
                 info['STATUS'] = f'Made table for {file_name}. Cleaning up'
                 result_list.extend(file_result)
 

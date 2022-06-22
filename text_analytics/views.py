@@ -28,6 +28,7 @@ def text_generate(request):
   return JsonResponse({'status':'Failed', 'report':''})
 
 def handle_uploaded_file(f, filename):
+    os.makedirs(os.path.dirname(os.path.join(FILES_DIR,filename)), exist_ok=True)
     with open(os.path.join(FILES_DIR,filename), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
@@ -37,19 +38,20 @@ def text_form_processing(request):
     if request.method == 'POST':
       text_form = textAnalyticsForm(request.POST)
       all_files = []
-      my_files= request.FILES.getlist('report_files')
+      report_file= request.FILES['report_files']
       filenames = ""
       if text_form.is_valid():
         print('valid form')
-        for f in my_files:
-          info['reportFilename'] = f.name
-          filenames += f.name
-          all_files.append(f.name)
-          handle_uploaded_file(f, f.name)
+        # as this project don't dev multiple file process now, so change to single now.
+        rfname = report_file.name
+        info['reportFilename'] = rfname
+        all_files.append(rfname)
+        namehash = hashlib.md5(rfname.encode("utf-8")).hexdigest()
+        handle_uploaded_file(report_file, os.path.join(namehash,rfname))
         keyfile = request.FILES['keyword_file']
         info['keywordFilename'] = keyfile.name
-        handle_uploaded_file(keyfile, keyfile.name)
-        info['keywords'] = text_form.cleaned_data['keywords'],
+        handle_uploaded_file(keyfile, os.path.join(namehash, keyfile.name))
+        info['keywords'] = text_form.cleaned_data['keywords']
 
         if request.is_secure():
           protocol = 'https'
@@ -59,7 +61,6 @@ def text_form_processing(request):
         # domain = protocol + "://" + request.META['HTTP_HOST']
         # no need domain to make it confuse, as frontend will follow the domain of visit
         domain = ""
-        namehash = hashlib.md5(filenames.encode("utf-8")).hexdigest()
         return render(request,'text_report.html', context={'mode':'Text', 'files':all_files, 'url': f'{domain}/text/generate?h={namehash}', 'statusurl': f'{domain}/returnstatus'})
       # if text_form.is_valid():
         

@@ -185,23 +185,25 @@ class TextAnalyst():
 
     def generateHTML(self, reportfile, keywordfile, keywords, report):
 
+        root_path = os.path.join(self.FILES_DIR, report)
         try:
             try:
-                with open(f"{os.path.join(self.FILES_DIR, report)}.html", 'r') as f:
-                    print(f">>>>{os.path.join(self.FILES_DIR, report)}.html find")
+                with open(f"{os.path.join(root_path, report)}.html", 'r') as f:
+                    print(f">>>>{os.path.join(root_path, report)}.html find")
                     repstr = f.read()
                     if len(repstr) > 10:
                         return repstr
             except:
                 pass
+
             html_content = "<div class='col-12 p-4'>"
-            self.files = os.listdir(self.FILES_DIR)
-            info['FILE'] = os.listdir(self.FILES_DIR)
+            self.files = os.listdir(root_path)
+            info['FILE'] = os.listdir(root_path)
             pdf_files = sorted([f for f in self.files if f.endswith('.pdf')])
             info['STATUS'] = pdf_files
             for file in self.files:
                 if file.endswith('.xlsx'):
-                    self.excel_file = os.path.join(self.FILES_DIR, file)
+                    self.excel_file = os.path.join(root_path, file)
                     break
             search_df = pd.read_excel(self.excel_file)
             search_terms = search_df['Key Terms']
@@ -254,7 +256,7 @@ class TextAnalyst():
             html_content = html_content.replace('''<table border="1" class="dataframe">''',
                                                 '''<table class="table small col-12" style="font-size:10px">''')
             info['STATUS'] = f'Done: {file_name}'
-            f = open(f"{os.path.join(self.FILES_DIR, report)}.html", 'w')
+            f = open(f"{os.path.join(root_path, report)}.html", 'w')
             f.write(html_content)
             f.close()
             info['STATUS'] = 'QUIT'

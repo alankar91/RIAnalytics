@@ -258,6 +258,7 @@ class TextAnalyst():
                                                 '''<table class="table small col-12" style="font-size:10px">''')
             info['STATUS'] = f'Done: {file_name}'
             f = open(f"{os.path.join(root_path, report)}.html", 'w')
+            html_content = html_content.replace(f"{report}/", "")
             f.write(html_content)
             f.close()
             info['STATUS'] = 'QUIT'

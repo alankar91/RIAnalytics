@@ -43,7 +43,7 @@
       <button style='background-color: #ff511a;min-width:150px'  class=" p-4 text-white rounded" onclick="analyseText()">Retry</button>
     </div>
   </div>  
-  <section class="about-us p-4" id= 'report_element'>
+  <section class="about-us p-4" id= 'report_element' style="max-width: 768px;margin: auto;">
     {{report|safe}}
     {% if mode == 'Insights' %}
         <div class="col-sm-12 p-4 "> <br><h4 class='font-weight-bold text-center text-warning'>Unigram</h4>

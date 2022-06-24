@@ -18,9 +18,7 @@
     <div class="shadow-sm p-4 bg-white border d-flex flex-row justify-content-end align-items-center">
       <p>Download Files:</p>
       {% if mode == 'Text' or mode == 'Insights'%}
-      {% for item in files %}
-        <a class="bg-white p-3 shadow-sm m-1 text-warning rounded" href="javascript:getPDF()" download>{{item}} </a>
-      {% endfor %}
+      <a class="bg-white p-3 shadow-sm m-1 text-warning rounded" href="javascript:getPDF(item)" download>{{files}} </a>
       {% endif %}
       <button class="bg-primary p-2 text-white rounded" onclick="getPDF()">Download Report</button>
     </div>

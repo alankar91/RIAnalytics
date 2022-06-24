@@ -69,7 +69,7 @@ def text_form_processing(request):
             # no need domain to make it confuse, as frontend will follow the domain of visit
             domain = ""
             return render(request, 'text_report.html',
-                          context={'mode': 'Text', 'files': " and ".join(all_files), 'url': f'{domain}/text/generate?h={namehash}',
+                          context={'mode': 'Text', 'files': all_files, 'namehash': namehash, 'url': f'{domain}/text/generate?h={namehash}',
                                    'statusurl': f'{domain}/returnstatus'})
         # if text_form.is_valid():
 

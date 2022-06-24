@@ -44,6 +44,7 @@ class TextAnalyst():
 
             pdf_doc.save(output_buffer)
             pdf_doc.close()
+            os.makedirs(os.path.dirname(f'{os.path.join(self.OUTPUT_DIR, file_name)}'), exist_ok=True)
             f = open(f'{os.path.join(self.OUTPUT_DIR, file_name)}', mode='wb')
             f.close()
             with open(f'{os.path.join(self.OUTPUT_DIR, file_name)}', mode='wb') as f:

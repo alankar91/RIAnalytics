@@ -53,7 +53,7 @@ def text_form_processing(request):
                 info['reportFilename'] = f.name
                 filenames += f.name
                 all_files.append(f.name)
-                handle_uploaded_file(report_file, os.path.join(namehash, f.name))
+                handle_uploaded_file(f, os.path.join(namehash, f.name))
 
             keyfile = request.FILES['keyword_file']
             info['keywordFilename'] = keyfile.name

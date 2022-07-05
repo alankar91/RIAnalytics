@@ -124,10 +124,9 @@ class TextAnalyst():
 
     def count_no_of_occurences(self, file_name, sentences, search_key_df):
         list_of_data = []
-
+        print(">>>>>>>>>>start to count:", search_key_df)
         for s_key, goal in zip(search_key_df['Key Terms'], search_key_df['Goals']):
             count, key_sentences = self.find_key_sentences(sentences, s_key.lower())
-
             result_dict = {}
             result_dict['File_Name'] = file_name
             result_dict['Search_Key'] = s_key
@@ -202,11 +201,7 @@ class TextAnalyst():
             info['FILE'] = os.listdir(root_path)
             pdf_files = sorted([f for f in self.files if f.endswith('.pdf')])
             info['STATUS'] = pdf_files
-            for file in self.files:
-                if file.endswith('.xlsx'):
-                    self.excel_file = os.path.join(root_path, file)
-                    break
-            search_df = pd.read_excel(self.excel_file)
+            search_df = pd.read_excel(os.path.join(root_path, f"{report}.xlsx"))
             search_terms = search_df['Key Terms']
             info['STATUS'] = 'Initial processing Successful'
             # if keywords:
@@ -232,10 +227,9 @@ class TextAnalyst():
                 info['STATUS'] = f'Stage 2.1: highlighted text for {file_name}'
 
                 info['STATUS'] = f'Making table for {file_name}'
-                file_result = self.count_no_of_occurences(fullname, sentences, search_df)
+                file_result = self.count_no_of_occurences(file_name, sentences, search_df)
                 info['STATUS'] = f'Made table for {file_name}. Cleaning up'
                 result_list.extend(file_result)
-
             self.df = pd.DataFrame(result_list)
             info['STATUS'] = f'Wrapping up {file_name}'
             pivot_table = self.df.groupby(['File_Name', 'Goals']).sum(['No of Occurance']).unstack()

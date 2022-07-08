@@ -12,4 +12,5 @@ urlpatterns = [
   path('returnIstatus',return_status_insights),
   path('download/<str:file>', download_highlights),
   path('download/<str:hashname>/<str:file>', download_highlights),
+  path('dl_search_result/<str:hashname>/<str:file>', download_search_result),
 ]

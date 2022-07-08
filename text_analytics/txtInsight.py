@@ -234,7 +234,7 @@ class TextAnalyst():
             info['STATUS'] = f'Wrapping up {file_name}'
             pivot_table = self.df.groupby(['File_Name', 'Goals']).sum(['No of Occurance']).unstack()
             pivot_table = pivot_table.droplevel(0, axis=1).reset_index()
-            self.df.to_excel('Text_Insight.xlsx', index=False)
+            self.df.to_excel(f"{os.path.join(self.OUTPUT_DIR, report, report)}_result.xlsx", index=False)
             pivot_table.to_excel('Pivot Table.xlsx', index=False)
             html_content += self.highlight_sentences_by_goal(self.df)
             html_content += '''<div class="col-sm-12 p-4 "> '''
@@ -261,3 +261,5 @@ class TextAnalyst():
 
         except Exception as Error:
             info['STATUS'] = f" Exiting with Error {Error}"
+
+

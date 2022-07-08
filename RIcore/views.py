@@ -37,6 +37,17 @@ def download_highlights(request, file, hashname=""):
     raise Http404
 
 
+def download_search_result(request, file, hashname=""):
+    file_path = os.path.join(OUTPUT_DIR, hashname, file)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+
 def return_status(request):
     from text_analytics.txtInsight import info as inf
     if inf['STATUS'] == 'QUIT':

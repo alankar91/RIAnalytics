@@ -17,7 +17,7 @@
     <div></div>"
     <div class="shadow-sm p-4 bg-white border d-flex flex-row justify-content-end align-items-center">
       <p>Download Files:</p>
-      <a class="bg-white p-3 shadow-sm m-1 text-danger rounded" href="/dl_search_result/{{namehash}}/{{namehash}}_result.xlsx">Download Search Result</a>
+      <a class="bg-white p-3 shadow-sm m-1 text-danger rounded" href="/dl_search_result/{{namehash}}/excel_extract.xlsx">Download Excel Extract</a>
       {% if mode == 'Text' or mode == 'Insights'%}
       {% for item in files %}
       <a class="bg-white p-3 shadow-sm m-1 text-warning rounded" href="/download/{{namehash}}/{{item}}" download>{{item}} </a>

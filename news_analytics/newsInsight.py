@@ -9,7 +9,7 @@ import re
 from IPython.display import display, HTML
 
 import circlify
-import fitz
+import pdftotext
 import matplotlib
 import matplotlib.pyplot as plt, mpld3
 
@@ -17,7 +17,8 @@ matplotlib.use('Agg')
 
 import pandas as pd
 
-info = {'STATUS':'Inititated','FILE':None}
+info = {'STATUS': 'Inititated', 'FILE': None}
+
 
 class NewsAnalyst():
     search_df = None
@@ -29,16 +30,15 @@ class NewsAnalyst():
         self.FILES_DIR = FILES_DIR
         self.OUTPUT_DIR = OUTPUT_DIR
 
-
     def extract_text(self, file_name):
-        pdf_doc = fitz.open(f'{os.path.join(self.FILES_DIR, file_name)}')
-        text = ''
+        with open(f'{os.path.join(self.FILES_DIR, file_name)}', 'rb') as f:
+            pdf = pdftotext.PDF(f)
 
-        for pg_num in range(pdf_doc.pageCount):
-            page = pdf_doc[pg_num]
-            page_text = page.get_text()
-            page_text = page_text.replace('\n', ' ')
-            text += page_text
+        text = '\n'.join(pdf).split('\n')
+
+        for t in text:
+            if t.startswith('Page'):
+                text.remove(t)
 
         return text
 
@@ -81,10 +81,8 @@ class NewsAnalyst():
                 break
 
         all_data_list = []
-
         for file_name in pdf_files:
             text = self.extract_text(file_name)
-
             text_list = self.parse_text(text)
             all_data_list.extend(text_list)
             info['STATUS'] = f'{file_name} processed'
@@ -92,21 +90,19 @@ class NewsAnalyst():
         df = pd.DataFrame(all_data_list)
         df.to_excel('text_extracted.xlsx', index=False)
         info['STATUS'] = 'text_extracted.xlsx saved'
-
         self.df = df
         return self.df
 
     def search_terms(self, row):
         s_terms = self.search_df
-
         try:
-            text = row['LP'].lower()
+            text = str(row['LP']).lower()
         except KeyError:
             text = ""
 
         for term, goal in zip(s_terms['Key Terms'], s_terms['Goals']):
             cond = (' ' + term.lower() + ' ') in text or (' ' + term.lower() + '.') in text or (
-                        '\n' + term.lower() + ' ') in text or (' ' + term.lower() + '\n') in text
+                    '\n' + term.lower() + ' ') in text or (' ' + term.lower() + '\n') in text
 
             if cond:
                 row['Key Terms'] = term
@@ -163,15 +159,18 @@ class NewsAnalyst():
         return pivot_table
 
     def generatePivotTable(self):
-        self.new_df = self.df.apply(self.search_terms, axis=1)
-        old_columns = self.new_df.columns
+        new_df = self.df.apply(self.search_terms, axis=1)
+        old_columns = new_df.columns
         CO_idx = list(old_columns).index('CO')
-        self.new_df = self.new_df.apply(self.parse_co, axis=1)
-        CO_columns = [col for col in self.new_df.columns if col.startswith('CO')]
+        print(CO_idx)
+        new_df = new_df.apply(self.parse_co, axis=1)
+        print(new_df)
+        CO_columns = [col for col in new_df.columns if col.startswith('CO')]
         final_columns = list(old_columns[:CO_idx]) + CO_columns + list(old_columns[CO_idx + 1:])
-        self.new_df = self.new_df[final_columns]
-        pivot_table = self.create_pivot_table(self.new_df)
+        new_df = new_df[final_columns]
+        pivot_table = self.create_pivot_table(new_df)
         self.pivot_table = pivot_table
+        self.new_df = new_df
         return pivot_table
 
     def saveExcel(self):
@@ -217,6 +216,9 @@ class NewsAnalyst():
         fig, ax = plt.subplots(figsize=(10, 10))
         ax.axis('off')
 
+        if len(circles) < 1:
+            return ""
+
         lim = max(
             max(
                 abs(circle.x) + circle.r,
@@ -244,34 +246,36 @@ class NewsAnalyst():
         return plt_html
 
     def generateHTML(self, filenames, excelfile):
-        try:
-            html_content = "<div class='col-12 p-4'>"
-            # html_content += self.main().to_html()
-            self.main()
-            info['STATUS'] = 'Generating pivot table'
-            self.generatePivotTable()
-            info['STATUS'] = 'Generating Excel Files'
-            html_content += '''<div class="col-sm-12 p-4 "> '''
-            html_content += self.saveExcel().to_html()
-            html_content += "</div></div>"
-            info['STATUS'] = 'Generating .xls Files'
-            html_content += self.highlight_LP()
-            info['STATUS'] = 'Generated Highlights'
-            info['STATUS'] = 'Making Chart'
-            html_content = html_content.replace('''<table border="1" class="dataframe">''',
-                                                '''<table class="table small col-12" style="font-size:10px">''').replace(
-                '&lt;', '<').replace('&gt;', '>').replace('\n', '<br>')
-            html_content += '''<div class='col-12 d-flex justify-content-center align-items-center'>'''
-            html_content += self.make_circles()
-            html_content += "</div>"
-            info['STATUS'] = 'Chart made successfully'
-            html_content += "</div>"
-            f = open('html_report.txt', 'w')
-            f.write(html_content)
-            f.close()
-            info['STATUS'] = 'Done'
-            info['STATUS'] = 'QUIT'
-            return (html_content)
-        except Exception as Error:
-            print(f" Exiting with Error {str(Error)}")
-            info['STATUS'] = f" Exiting with Error {str(Error)}"
+
+        html_content = "<div class='col-12 p-4'>"
+        self.main()
+        import pdb;
+        pdb.set_trace()
+        # html_content += self.main().to_html()
+        info['STATUS'] = 'Generating pivot table'
+        self.generatePivotTable()
+        info['STATUS'] = 'Generating Excel Files'
+        html_content += '''<div class="col-sm-12 p-4 "> '''
+        html_content += self.saveExcel().to_html()
+        html_content += "</div></div>"
+        info['STATUS'] = 'Generating .xls Files'
+        html_content += self.highlight_LP()
+        info['STATUS'] = 'Generated Highlights'
+        info['STATUS'] = 'Making Chart'
+        html_content = html_content.replace('''<table border="1" class="dataframe">''',
+                                            '''<table class="table small col-12" style="font-size:10px">''').replace(
+            '&lt;', '<').replace('&gt;', '>').replace('\n', '<br>')
+        html_content += '''<div class='col-12 d-flex justify-content-center align-items-center'>'''
+        html_content += self.make_circles()
+        html_content += "</div>"
+        info['STATUS'] = 'Chart made successfully'
+        html_content += "</div>"
+        f = open('html_report.txt', 'w')
+        f.write(html_content)
+        f.close()
+        info['STATUS'] = 'Done'
+        info['STATUS'] = 'QUIT'
+        return (html_content)
+    # except Exception as Error:
+    #     print(f" Exiting with Error {str(Error)}")
+    #     info['STATUS'] = f" Exiting with Error {str(Error)}"

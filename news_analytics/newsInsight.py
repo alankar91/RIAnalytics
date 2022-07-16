@@ -187,7 +187,7 @@ class NewsAnalyst():
         self.new_df.rename(
             columns={'HD': 'Headline', 'PD': 'Publication Date', 'LP': 'Lead Para', 'CO1': 'Tagged Company1',
                      'CO2': 'Tagged Company2', 'CO3': 'Tagged Company3'}, inplace=True)
-        self.new_df.to_excel("NewsInsights_renamed.xlsx", index=False)
+        self.new_df.to_excel(os.path.join(self.OUTPUT_DIR, "NewsInsights_report.xlsx"), index=False)
 
         return self.new_df
 
@@ -248,6 +248,8 @@ class NewsAnalyst():
 
     def generateHTML(self, filenames, excelfile, namehash):
         self.FILES_DIR = os.path.join(self.FILES_DIR, namehash)
+        self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, namehash)
+
         html_content = "<div class='col-12 p-4'>"
         self.main()
         # html_content += self.main().to_html()

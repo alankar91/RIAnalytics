@@ -40,7 +40,7 @@ def news_generate(request):
                                       namehash=request.GET.get("h", ""))
         print('report done')
         return JsonResponse({'status': 'successful', 'report': report})
-    except AttributeError as E:
+    except Exception as E:
         print('Error', str(E))
         return JsonResponse({'status': 'Failed', 'report': ''})
 
@@ -95,7 +95,7 @@ def news_form_processing(request):
             # no need domain to make it confuse, as frontend will follow the domain of visit
             domain = ""
 
-            return render(request, 'text_report.html',
+            return render(request, 'news_report.html',
                           context={'mode': 'News', 'files': all_files, 'namehash': namehash, 'url': f'{domain}/news/generate?h={namehash}',
                                    'statusurl': f'{domain}/returnNstatus'})
         else:

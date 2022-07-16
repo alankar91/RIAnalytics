@@ -71,7 +71,7 @@ class NewsAnalyst():
         return text_list
 
     def main(self):
-        self.files = os.listdir(self.FILES_DIR)  #####
+        self.files = os.listdir(self.FILES_DIR)
         pdf_files = sorted([f for f in self.files if f.endswith('.pdf')])
 
         for file in self.files:
@@ -157,6 +157,7 @@ class NewsAnalyst():
                 pivot_table = pd.DataFrame(pivot_dict).transpose()
 
         return pivot_table
+
 
     def generatePivotTable(self):
         new_df = self.df.apply(self.search_terms, axis=1)
@@ -245,12 +246,10 @@ class NewsAnalyst():
         plt_html = mpld3.fig_to_html(fig)
         return plt_html
 
-    def generateHTML(self, filenames, excelfile):
-
+    def generateHTML(self, filenames, excelfile, namehash):
+        self.FILES_DIR = os.path.join(self.FILES_DIR, namehash)
         html_content = "<div class='col-12 p-4'>"
         self.main()
-        import pdb;
-        pdb.set_trace()
         # html_content += self.main().to_html()
         info['STATUS'] = 'Generating pivot table'
         self.generatePivotTable()

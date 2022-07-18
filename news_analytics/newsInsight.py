@@ -32,10 +32,8 @@ class NewsAnalyst():
 
     def extract_text(self, file_name):
         with open(f'{os.path.join(self.FILES_DIR, file_name)}', 'rb') as f:
-            pdf = pdftotext.PDF(f)
-
+            pdf = pdftotext.PDF(f, physical=True)
         text = '\n'.join(pdf).split('\n')
-
         for t in text:
             if t.startswith('Page'):
                 text.remove(t)
@@ -88,6 +86,7 @@ class NewsAnalyst():
             info['STATUS'] = f'{file_name} processed'
 
         df = pd.DataFrame(all_data_list)
+        print(">>>>>:\n%s" % df)
         df.to_excel('text_extracted.xlsx', index=False)
         info['STATUS'] = 'text_extracted.xlsx saved'
         self.df = df
@@ -165,7 +164,6 @@ class NewsAnalyst():
         CO_idx = list(old_columns).index('CO')
         print(CO_idx)
         new_df = new_df.apply(self.parse_co, axis=1)
-        print(new_df)
         CO_columns = [col for col in new_df.columns if col.startswith('CO')]
         final_columns = list(old_columns[:CO_idx]) + CO_columns + list(old_columns[CO_idx + 1:])
         new_df = new_df[final_columns]
@@ -187,8 +185,8 @@ class NewsAnalyst():
         self.new_df.rename(
             columns={'HD': 'Headline', 'PD': 'Publication Date', 'LP': 'Lead Para', 'CO1': 'Tagged Company1',
                      'CO2': 'Tagged Company2', 'CO3': 'Tagged Company3'}, inplace=True)
+        self.new_df = self.new_df.replace(r'<[^<>]*>', '', regex=True).replace(r'\n', ' ', regex=True)
         self.new_df.to_excel(os.path.join(self.OUTPUT_DIR, "NewsInsights_report.xlsx"), index=False)
-
         return self.new_df
 
     def highlight_LP(self):
@@ -249,7 +247,15 @@ class NewsAnalyst():
     def generateHTML(self, filenames, excelfile, namehash):
         self.FILES_DIR = os.path.join(self.FILES_DIR, namehash)
         self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, namehash)
-
+        os.makedirs(os.path.dirname(os.path.join(self.OUTPUT_DIR, "empty.txt")), exist_ok=True)
+        try:
+            with open(f"{os.path.join(self.OUTPUT_DIR, namehash)}.html", 'r') as f:
+                print(f">>>>{os.path.join(self.OUTPUT_DIR, namehash)}.html find")
+                repstr = f.read()
+                if len(repstr) > 10:
+                    return repstr
+        except:
+            pass
         html_content = "<div class='col-12 p-4'>"
         self.main()
         # html_content += self.main().to_html()
@@ -257,7 +263,7 @@ class NewsAnalyst():
         self.generatePivotTable()
         info['STATUS'] = 'Generating Excel Files'
         html_content += '''<div class="col-sm-12 p-4 "> '''
-        html_content += self.saveExcel().to_html()
+        html_content += self.saveExcel().to_html().replace('\n', ' ')
         html_content += "</div></div>"
         info['STATUS'] = 'Generating .xls Files'
         html_content += self.highlight_LP()
@@ -265,13 +271,13 @@ class NewsAnalyst():
         info['STATUS'] = 'Making Chart'
         html_content = html_content.replace('''<table border="1" class="dataframe">''',
                                             '''<table class="table small col-12" style="font-size:10px">''').replace(
-            '&lt;', '<').replace('&gt;', '>').replace('\n', '<br>')
+            '&lt;', '<').replace('&gt;', '>')
         html_content += '''<div class='col-12 d-flex justify-content-center align-items-center'>'''
         html_content += self.make_circles()
         html_content += "</div>"
         info['STATUS'] = 'Chart made successfully'
         html_content += "</div>"
-        f = open('html_report.txt', 'w')
+        f = open(f"{os.path.join(self.OUTPUT_DIR, namehash)}.html", 'w')
         f.write(html_content)
         f.close()
         info['STATUS'] = 'Done'

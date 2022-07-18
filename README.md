@@ -62,3 +62,6 @@ sudo systemctl restart nginx
 ```
 
 And done visit the ip
+
+
+# becareful about pdftotext lib will have diff result in diff os

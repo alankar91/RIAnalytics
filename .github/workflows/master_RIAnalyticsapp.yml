@@ -22,7 +22,7 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v1
       with:
-        registry: https://index.docker.io
+        registry: https://rianalytics.azurecr.io/
         username: ${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}
         password: ${{ secrets.AzureAppService_ContainerPassword_cbb14c0badd442a497bc661f82ce0a30 }}
 
@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}/rianalytics:${{ github.sha }}
+        tags: rianalytics.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}/rianalytics:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'RIAnalyticsapp'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b03b8e28d9db4324816ecf5cc675980f }}
-        images: 'index.docker.io${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}/rianalytics:${{ github.sha }}'
+        images: 'rianalytics.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}/rianalytics:${{ github.sha }}'

@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: Deploy to Azure Web App
-    - uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v2
       with:
         app-name: 'RIAnalyticsapp'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b03b8e28d9db4324816ecf5cc675980f }}

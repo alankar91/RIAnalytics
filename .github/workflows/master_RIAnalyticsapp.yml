@@ -24,7 +24,17 @@ jobs:
         docker build . -t rianalytics.azurecr.io/rianalytics:${{ github.sha }}
         docker push rianalytics.azurecr.io/rianalytics:${{ github.sha }}   
 
-  #   steps:
+
+  deploy:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - name: Deploy to Azure Web App
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'RIAnalyticsapp'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b03b8e28d9db4324816ecf5cc675980f }}
+        images: 'rianalytics.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_399c76fe64b946f79aa492c1f6338417 }}/rianalytics:${{ github.sha }}'
   #   - uses: actions/checkout@v2
 
   #   - name: Set up Docker Buildx

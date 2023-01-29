@@ -11,6 +11,7 @@ RUN pip install fitz
 RUN pip install pymupdf
 RUN pip install nltk
 RUN pip install pdftotext
+RUN pip install scikit-learn
 RUN python -m nltk.downloader punkt  
 RUN pip install -r requirements.txt
 

@@ -1,6 +1,5 @@
 # RIAnalytics
 
- 
 1. Fist do this commmand then paste the content this file to your vm
 ```bash
 sudo nano /etc/systemd/system/gunicorn.service
